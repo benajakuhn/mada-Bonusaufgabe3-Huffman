@@ -109,22 +109,6 @@ public class Main {
         return tree;
     }
 
-    public static void tableToFile(int[] table) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] > 0) {
-                sb.append(i);
-                sb.append(":");
-                sb.append(table[i]);
-                if (i < table.length - 1) {
-                    sb.append("-");
-                }
-            }
-        }
-
-        writeFile("dec_tab.txt", sb.toString());
-    }
-
     public static void writeFile(String Filename, String content) {
         try {
             BufferedWriter fr = new BufferedWriter(new FileWriter(Filename));
