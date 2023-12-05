@@ -1,13 +1,8 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 
 
 public class HuffmanTree {
@@ -48,7 +43,7 @@ public class HuffmanTree {
         for (int i = 0; i < chars.length; i++) {
             sb.append(chars[i]);
             sb.append(":");
-            sb.append(genCode(tree.root, "0", chars[i]));
+            sb.append(genCode(tree.root, "", chars[i]));
             if (i < chars.length - 1) {
                 sb.append("-");
             }
@@ -56,18 +51,28 @@ public class HuffmanTree {
         return sb.toString();
     }
 
-    private String genCode(HuffmanNode node, String code, int value) {
-        if (node.character == value) {
-            return code;
+    public String encode(HuffmanTree tree, int[] chars){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(genCode(tree.root, "", chars[i]));
         }
-        if (node.left != null) {
-            genCode(node.left, code + "0", value);
-        }
-        if (node.right != null) {
-            genCode(node.right, code + "1", value);
-        }
+        return sb.toString();
+    }
 
-        return null;
+    private String genCode(HuffmanNode node, String code, int value) {
+        if (node == null) {
+            return null;
+        } else if (node.character == value) {
+            return code;
+        } else {
+            String left = genCode(node.left, code + "0", value);
+            String right = genCode(node.right, code + "1", value);
+            if (left != null){
+                return left;
+            } else {
+                return right;
+            }
+        }
     }
 
     // lesen einer Kodierungstabelle und diese als Huffmanbaum darstellen
