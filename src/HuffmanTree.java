@@ -51,7 +51,7 @@ public class HuffmanTree {
         return sb.toString();
     }
 
-    public String encode(HuffmanTree tree, int[] chars){
+    public String encode(HuffmanTree tree, int[] chars) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < chars.length; i++) {
             sb.append(genCode(tree.root, "", chars[i]));
@@ -67,7 +67,7 @@ public class HuffmanTree {
         } else {
             String left = genCode(node.left, code + "0", value);
             String right = genCode(node.right, code + "1", value);
-            if (left != null){
+            if (left != null) {
                 return left;
             } else {
                 return right;
@@ -95,7 +95,7 @@ public class HuffmanTree {
             node = new HuffmanNode(0, 0);
         }
 
-        if (!bitString.isEmpty() && (int) bitString.charAt(0) == '0' ) {
+        if (!bitString.isEmpty() && (int) bitString.charAt(0) == '0') {
             if (node.left == null) {
                 node.left = new HuffmanNode(0, 0);
             }
@@ -115,7 +115,6 @@ public class HuffmanTree {
         }
         return node;
     }
-
 
 
     // Decodieren eines bitStrings anhand der in tree gespeicherten Kodierung
