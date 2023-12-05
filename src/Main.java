@@ -1,9 +1,29 @@
 import java.io.*;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello Andy Spoonys little world");
+    public static void main(String[] args) throws IOException {
+
         createLookuptable();
+
+        // Huffmantree aus CodierungsTabelle erzeugen
+        HuffmanTree ht = new HuffmanTree();
+        ht = ht.readCodingTable(getFile("dec_tab-mada.txt"));
+
+        //output-mada.dat einlesen
+        File file = new File("output-mada.dat");
+        byte[] bFile = new byte[(int) file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(bFile);
+        fis.close();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bFile) {
+            String s2 = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
+            sb.append(s2);
+        }
+        String binaryString = sb.toString();
+        binaryString = binaryString.substring(0,binaryString.lastIndexOf('1'));
+        // Text decodieren und in decompress.txt speichern
+        writeFile("decompress.txt",ht.readWithTree(ht,binaryString));
     }
 
     private static void createLookuptable() {
@@ -14,8 +34,9 @@ public class Main {
         for (char c: text.toCharArray()) {
             lookupTable[c]++;
         }
+        HuffmanTree hf = new HuffmanTree();
 
-        tableToFile(lookupTable);
+
     }
 
     public static void tableToFile(int[] table){
@@ -32,10 +53,6 @@ public class Main {
         }
 
         writeFile("dec_tab.txt", sb.toString());
-    }
-    public static void codeBitstring(){
-       String content = getFile("dec_tab.txt");
-
     }
 
     public static void writeFile(String Filename, String content){
