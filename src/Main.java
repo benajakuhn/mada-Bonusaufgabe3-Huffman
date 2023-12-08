@@ -11,22 +11,22 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws IOException {
         //lookuptable für text.txt
-        HuffmanTree tree = createLookuptable("text.txt");
+        HuffmanTree tree = createLookuptable("text.txt", "dec_tab.txt");
 
         // encode text.txt
         encodeFile(tree, "text.txt", "output.dat");
 
         //decode output.dat
-        decodeFile(tree, "output.dat", "decompress_ours.txt");
+        decodeFile(tree, "output.dat", "decompress_ours.txt", "dec_tab.txt");
 
         //lookuptable für text.txt
-        HuffmanTree treeAndy = createLookuptable("andys-story.txt");
+        HuffmanTree treeAndy = createLookuptable("andys-story.txt", "dec_tab_andy.txt");
 
         // encode text.txt
         encodeFile(treeAndy, "andys-story.txt", "output_andy.dat");
 
         //decode output.dat
-        decodeFile(treeAndy, "output_andy.dat", "decompress_andy.txt");
+        decodeFile(treeAndy, "output_andy.dat", "decompress_andy.txt", "dec_tab_andy.txt");
 
 
         // Huffmantree aus CodierungsTabelle erzeugen
@@ -34,10 +34,10 @@ public class Main {
         ht = ht.readCodingTable(getFile("dec_tab-mada.txt"));
 
         //output-mada.dat decodieren
-        decodeFile(ht, "output-mada.dat", "decompress.txt");
+        decodeFile(ht, "output-mada.dat", "decompress.txt", "dec_tab-mada.txt");
     }
 
-    private static void decodeFile(HuffmanTree ht, String fileIn, String fileOut) throws IOException {
+    private static void decodeFile(HuffmanTree ht, String fileIn, String fileOut, String codingFile) throws IOException {
         File file = new File(fileIn);
         byte[] bFile = new byte[(int) file.length()];
         FileInputStream fis = new FileInputStream(file);
@@ -49,7 +49,11 @@ public class Main {
             sb.append(s2);
         }
         String binaryString = sb.toString();
-        binaryString = binaryString.substring(0, binaryString.lastIndexOf('1'));
+        String codingTable = getFile(codingFile);
+        assert codingTable != null;
+        if (!codingTable.contains(binaryString.substring(binaryString.lastIndexOf('1')) + "-")){
+            binaryString = binaryString.substring(0, binaryString.lastIndexOf('1'));
+        }
         writeFile(fileOut, ht.readWithTree(ht, binaryString));
     }
 
@@ -85,7 +89,7 @@ public class Main {
         return byteArray;
     }
 
-    private static HuffmanTree createLookuptable(String file) {
+    private static HuffmanTree createLookuptable(String file, String fileout) {
         String text = getFile(file);
         int[] lookupTable = new int[128];
 
@@ -104,7 +108,7 @@ public class Main {
 
         HuffmanTree tree =
             new HuffmanTree(chars.stream().mapToInt(i -> i).toArray(), frequencies.stream().mapToInt(i -> i).toArray());
-        writeFile("dec_tab.txt", tree.generateCodingTable(tree, chars.stream().mapToInt(i -> i).toArray()));
+        writeFile(fileout, tree.generateCodingTable(tree, chars.stream().mapToInt(i -> i).toArray()));
         return tree;
     }
 
